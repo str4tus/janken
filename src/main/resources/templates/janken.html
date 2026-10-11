@@ -11,6 +11,17 @@
   <div th:if="${name}">
     <!-- paramを送りたいときは[[${param}]] {}や[]を忘れない-->
     Hi [[${name}]]
+    <br>
+    <!--プレイヤー名の情報を画面遷移後も残す-->
+    <a th:href="@{/janken/gu(name=${name})}">グー </a>
+    <a th:href="@{/janken/choki(name=${name})}">チョキ </a>
+    <a th:href="@{/janken/pa(name=${name})}">パー </a>
+  </div>
+
+  <div th:if="${result}">
+    <p>あなたの手は [[${result.myHand}]]</p>
+    <p>相手の手は [[${result.comHand}]]</p>
+    <p>結果は [[${result.result}]]</p>
   </div>
 
 </body>
