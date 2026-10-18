@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/schema/security">
 
 <head>
   <meta charset="utf-8">
@@ -8,7 +9,9 @@
 
 <body>
   <!-- Hiと名前表示-->
-  <div th:if="${name}">
+  <!--<div th:if="${name}">-->
+  <div>
+    <div sec:authentication="name"></div>
     <!-- paramを送りたいときは[[${param}]] {}や[]を忘れない-->
     Hi [[${name}]]
     <br>
