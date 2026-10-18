@@ -1,5 +1,6 @@
 package oit.is.z3587.kaizi.janken.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.security.Principal;
 
 import java.util.List;
 /*ランダム用 */
@@ -14,15 +16,25 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import oit.is.z3587.kaizi.janken.model.Janken;
 
+import oit.is.z3587.kaizi.janken.model.Entry;
+
 @Controller
 /* 全てのメソッドは/jankenで呼び出される */
 @RequestMapping("/janken")
 public class JankenController {
 
+  @Autowired
+  private Entry entry;
+
   private static final List<String> HANDS = List.of("グー", "チョキ", "パー");
 
   @GetMapping
-  public String janken1() {
+  public String janken1(Principal prin, ModelMap model) {
+    /* task2で追加 */
+    String loginUser = prin.getName();
+    this.entry.addUser(loginUser);
+    model.addAttribute("entry", this.entry);
+    /* ここまで */
     return "janken.html";
   }
 

@@ -11,10 +11,22 @@
   <!-- Hiと名前表示-->
   <!--<div th:if="${name}">-->
   <div>
-    <div sec:authentication="name"></div>
+
     <!-- paramを送りたいときは[[${param}]] {}や[]を忘れない-->
-    Hi [[${name}]]
+    Hi <div sec:authentication="name"></div>
+    <a href="/logout">ログアウト</a>
     <br>
+    <div th:if="${entry}">
+      エントリー
+      <ul>
+        <!--entryオブジェクトのentryNoというフィールドを指定している-->
+        <!--<li>EntryNo:[[${entry.entryNo}]]</li>-->
+        <!--eachは所謂for each．この場合entryオブジェクトのusersフィールドにあるすべてのデータを一通り表示する
+            thが指定されているので[]が不要になる-->
+        <li th:each="user : ${entry.users}">[[${user}]]</li>
+      </ul>
+    </div>
+
     <!--プレイヤー名の情報を画面遷移後も残す-->
     <a th:href="@{/janken/gu(name=${name})}">グー </a>
     <a th:href="@{/janken/choki(name=${name})}">チョキ </a>
