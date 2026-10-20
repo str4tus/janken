@@ -30,7 +30,13 @@ public class JankenAuthConfiguration {
             .logoutSuccessUrl("/")) // ログアウト後に / にリダイレクト
         .authorizeHttpRequests(authz -> authz
             .requestMatchers("/janken/**").authenticated() // /janken/以下は認証済みであること
-            .anyRequest().permitAll()); // 上記以外は全員アクセス可能
+            .anyRequest().permitAll()) // 上記以外は全員アクセス可能
+        .csrf(csrf -> csrf
+            .ignoringRequestMatchers("/h2-console/*"))
+        /* h2-consoleにアクセスするために必要なオプション */
+        .headers(headers -> headers
+            .frameOptions(frameOptions -> frameOptions
+                .sameOrigin()));
 
     return http.build();
   }
@@ -51,7 +57,8 @@ public class JankenAuthConfiguration {
         .password("{bcrypt}$2y$05$KDIrAwGX9XHNqSAzoposGuZkSgK1L/hcYqg56EHbVtd2xS4f/1qdG").roles("USER").build();
     UserDetails user2 = User.withUsername("user2")
         .password("{bcrypt}$2y$05$hX2RXUftVQrPAxPL5duF7.AlcOQ8K1CIfLycIjc4rv5Jou3rQml8i").roles("USER").build();
-    UserDetails honda = User.withUsername("ほんだ").password("{bcrypt}$2y$05$Apj3njYRsRAVaKYfK6ngfOpDmuf.rE1h2cgvXx6cFPgHtKons8Pzy").roles("USER").build();
+    UserDetails honda = User.withUsername("ほんだ")
+        .password("{bcrypt}$2y$05$Apj3njYRsRAVaKYfK6ngfOpDmuf.rE1h2cgvXx6cFPgHtKons8Pzy").roles("USER").build();
 
     // 生成したユーザをImMemoryUserDetailsManagerに渡す（いくつでも良い）
     return new InMemoryUserDetailsManager(user1, user2, honda);
