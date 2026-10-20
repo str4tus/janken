@@ -16,14 +16,19 @@
     <span sec:authentication="name"></span>V.S.[[${username}]]
   </h2>
   <br>
-  <a th:href="@{/janken/gu(name=${name})}">グー </a>
-  <a th:href="@{/janken/choki(name=${name})}">チョキ </a>
-  <a th:href="@{/janken/pa(name=${name})}">パー </a>
+  <!--二つ以上クエリを置くときは()で囲み、「,」で区切る-->
+  <a th:href="@{/fight(id=${id},hand='gu')}">グー </a>
+  <a th:href="@{/fight(id=${id},hand='choki')}">チョキ </a>
+  <a th:href="@{/fight(id=${id},hand='pa')}">パー </a>
 
   <div th:if="${result}">
     <p>あなたの手は [[${result.myHand}]]</p>
     <p>相手の手は [[${result.comHand}]]</p>
     <p>結果は [[${result.result}]]</p>
+  </div>
+
+  <div>
+    <a href="/janken">戻る</a>
   </div>
 
 </body>
