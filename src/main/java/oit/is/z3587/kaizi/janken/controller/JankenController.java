@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
 
 import java.util.List;
+import java.util.ArrayList;
 /*ランダム用 */
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -18,23 +19,36 @@ import oit.is.z3587.kaizi.janken.model.Janken;
 
 import oit.is.z3587.kaizi.janken.model.Entry;
 
+import oit.is.z3587.kaizi.janken.model.User;
+
+import oit.is.z3587.kaizi.janken.model.UserMapper;
+
 @Controller
 /* 全てのメソッドは/jankenで呼び出される */
 @RequestMapping("/janken")
 public class JankenController {
 
   @Autowired
-  private Entry entry;
+  UserMapper userMapper;
+  // private Entry entry;
 
   private static final List<String> HANDS = List.of("グー", "チョキ", "パー");
 
   @GetMapping
-  public String janken1(Principal prin, ModelMap model) {
+  public String janken1(ModelMap model) {
     /* task2で追加 */
-    String loginUser = prin.getName();
-    this.entry.addUser(loginUser);
-    model.addAttribute("entry", this.entry);
+    /*
+     * lec04-task3で削除
+     * String loginUser = prin.getName();
+     * this.entry.addUser(loginUser);
+     * odel.addAttribute("entry", this.entry);
+     */
     /* ここまで */
+    /* lec04-task3で追加 */
+    ArrayList<User> Users = userMapper.selectAllUserName();
+    model.addAttribute("Users", Users);
+    /* ここまで */
+
     return "janken.html";
   }
 

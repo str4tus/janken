@@ -16,15 +16,12 @@
     Hi <div sec:authentication="name"></div>
     <a href="/logout">ログアウト</a>
     <br>
-    <div th:if="${entry}">
-      エントリー
-      <ul>
-        <!--entryオブジェクトのentryNoというフィールドを指定している-->
-        <!--<li>EntryNo:[[${entry.entryNo}]]</li>-->
-        <!--eachは所謂for each．この場合entryオブジェクトのusersフィールドにあるすべてのデータを一通り表示する
-            thが指定されているので[]が不要になる-->
-        <li th:each="user : ${entry.users}">[[${user}]]</li>
-      </ul>
+
+    エントリー
+    <div th:each="User,stat:${Users}">
+      <tr>
+        <td>ユーザ名:[[${User.name}]]</td>
+      </tr>
     </div>
 
     <!--プレイヤー名の情報を画面遷移後も残す-->
