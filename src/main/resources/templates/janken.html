@@ -19,12 +19,8 @@
 
 
     <h2>エントリー</h2>
-    <div th:each="User,stat:${Users}">
-      <tr>
-        <td>ユーザ名:[[${User.name}]]</td>
-      </tr>
-    </div>
-
+    <!--thymeleafの記法はコメントアウトしても有効になるので注意-->
+    <li th:each="user : ${users}"><a th:href="@{/janken/match(id=${user.id})}"> [[${user.name}]]</a></li>
     <h2>試合結果</h2>
     <div th:each="Match,stat:${Matches}">
       <tr>
@@ -36,17 +32,10 @@
       </tr>
     </div>
 
-    <!--プレイヤー名の情報を画面遷移後も残す-->
-    <a th:href="@{/janken/gu(name=${name})}">グー </a>
-    <a th:href="@{/janken/choki(name=${name})}">チョキ </a>
-    <a th:href="@{/janken/pa(name=${name})}">パー </a>
+
   </div>
 
-  <div th:if="${result}">
-    <p>あなたの手は [[${result.myHand}]]</p>
-    <p>相手の手は [[${result.comHand}]]</p>
-    <p>結果は [[${result.result}]]</p>
-  </div>
+
 
 </body>
 

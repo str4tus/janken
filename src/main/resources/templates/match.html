@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/schema/security">
+
+<head>
+  <meta charset="utf-8">
+  <title>対戦中</title>
+</head>
+
+<body>
+
+  <a href="/logout">ログアウト</a>
+  <br>
+  <h1>Match</h1>
+  <!--プレイヤー名の情報を画面遷移後も残す-->
+  <h2>
+    <span sec:authentication="name"></span>V.S.[[${username}]]
+  </h2>
+  <br>
+  <a th:href="@{/janken/gu(name=${name})}">グー </a>
+  <a th:href="@{/janken/choki(name=${name})}">チョキ </a>
+  <a th:href="@{/janken/pa(name=${name})}">パー </a>
+
+  <div th:if="${result}">
+    <p>あなたの手は [[${result.myHand}]]</p>
+    <p>相手の手は [[${result.comHand}]]</p>
+    <p>結果は [[${result.result}]]</p>
+  </div>
+
+</body>

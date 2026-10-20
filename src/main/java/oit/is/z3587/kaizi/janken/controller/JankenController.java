@@ -51,13 +51,12 @@ public class JankenController {
     /* ここまで */
     /* lec04-task3で追加 */
     ArrayList<User> Users = userMapper.selectAllUserName();
-    model.addAttribute("Users", Users);
+    model.addAttribute("users", Users);
     /* ここまで */
-    /* lec04-task3で追加 */
+    /* lec04-task4で追加 */
     ArrayList<Match> Matches = matchMapper.selectAllMatches();
     model.addAttribute("Matches", Matches);
     /* ここまで */
-    /* lec04-task3で追加 */
 
     return "janken.html";
   }
@@ -70,6 +69,13 @@ public class JankenController {
   public String janken2(@RequestParam String name, ModelMap model) {
     model.addAttribute("name", name);
     return "janken.html";
+  }
+
+  @GetMapping("/match")
+  public String match(@RequestParam int id, ModelMap model) {
+    User user = userMapper.selectById(id);
+    model.addAttribute("username", user.getName());
+    return "match.html";
   }
 
   @GetMapping("/gu")
@@ -93,6 +99,6 @@ public class JankenController {
     String comHand = HANDS.get(0);
     model.addAttribute("name", name);
     model.addAttribute("result", new Janken(myHand, comHand));
-    return "janken.html";
+    return "match.html";
   }
 }
