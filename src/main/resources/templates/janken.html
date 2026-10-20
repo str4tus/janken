@@ -17,10 +17,22 @@
     <a href="/logout">ログアウト</a>
     <br>
 
-    エントリー
+
+    <h2>エントリー</h2>
     <div th:each="User,stat:${Users}">
       <tr>
         <td>ユーザ名:[[${User.name}]]</td>
+      </tr>
+    </div>
+
+    <h2>試合結果</h2>
+    <div th:each="Match,stat:${Matches}">
+      <tr>
+        <td>id:[[${Match.id}]] </td>
+        <td>user1:[[${Match.user1}]]</td>
+        <td>user2:[[${Match.user2}]]</td>
+        <td>user1の手:[[${Match.user1Hand}]]</td>
+        <td>user2の手:[[${Match.user2Hand}]]</td>
       </tr>
     </div>
 
