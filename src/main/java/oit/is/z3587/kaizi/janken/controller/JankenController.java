@@ -114,14 +114,32 @@ public class JankenController {
       } else if (janken.getComHand().equals("パー")) {
         match.setUser2Hand("pa");
       }
+      matchMapper.insert(match);
+
     } else { /* 対戦相手がCPUでないとき */
-      MatchInfo matchInfo = new MatchInfo(userinfo1.getId(), userinfo2.getId(), hand);
-      matchInfoMapper.insert(matchInfo);
-      // 後でifで条件分岐追加
-      return "wait.html";
+
+      // Aによって対戦相手Bが指定されているアクティブな試合があるか確認(引数はBのID)
+      if (matchInfoMapper.existsActiveMatchInfo(userinfo1.getId())) {
+        MatchInfo activeMatchInfo = matchInfoMapper.getActiveMatchInfoById(userinfo1.getId());
+        // 対戦が成立したため対象のmatchinfoを非アクティブにする
+        matchInfoMapper.updateInactive(activeMatchInfo.getId());
+        Match match2 = new Match();
+        match2.setUser1(activeMatchInfo.getUser1());
+        match2.setUser2(activeMatchInfo.getUser2());
+        match2.setUser1Hand(activeMatchInfo.getUser1Hand());
+        match2.setUser2Hand(hand);
+        match2.setisActive(true);
+        matchMapper.insertPlayerMatch(match2);
+
+      } else {/* 対戦相手が指定されているアクティブな試合がない場合は待機画面に遷移 */
+        MatchInfo matchInfo = new MatchInfo(userinfo1.getId(), userinfo2.getId(), hand);
+        matchInfoMapper.insert(matchInfo);
+        model.addAttribute("username", userinfo2.getName());
+        model.addAttribute("id", userinfo2.getId());
+        return "wait.html";
+      }
     }
 
-    matchMapper.insert(match);
     model.addAttribute("username", userinfo2.getName());
     model.addAttribute("id", userinfo2.getId());
 

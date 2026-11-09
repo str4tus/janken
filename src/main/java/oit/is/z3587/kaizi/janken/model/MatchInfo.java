@@ -38,6 +38,10 @@ public class MatchInfo {
     return isActive;
   }
 
+  public void setId(int id) {
+    this.id = id;
+  }
+
   public void setUser1(int user1) {
     this.user1 = user1;
   }
