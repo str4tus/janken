@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.security.Principal;
 
 import java.util.List;
@@ -27,6 +28,7 @@ import oit.is.z3587.kaizi.janken.model.Match;
 import oit.is.z3587.kaizi.janken.model.MatchMapper;
 import oit.is.z3587.kaizi.janken.model.MatchInfo;
 import oit.is.z3587.kaizi.janken.model.MatchInfoMapper;
+import oit.is.z3587.kaizi.janken.service.AsyncKekka;
 
 @Controller
 /* 全てのメソッドは/jankenで呼び出される */
@@ -39,9 +41,11 @@ public class JankenController {
   UserMapper userMapper;
   @Autowired
   MatchInfoMapper matchInfoMapper;
+  @Autowired
+  AsyncKekka asyncKekka;
   // private Entry entry;
 
-  private static final List<String> HANDS = List.of("グー", "チョキ", "パー");
+  private static final List<String> HANDS = List.of("Gu", "Choki", "Pa");
 
   @GetMapping("/janken")
   public String janken1(ModelMap model) {
@@ -100,19 +104,19 @@ public class JankenController {
     match.setUser1Hand(hand);
     Janken janken = null;
     if (userinfo2.getName().equals("CPU")) {
-      if (hand.equals("gu")) {
-        janken = play("グー");
-      } else if (hand.equals("choki")) {
-        janken = play("チョキ");
-      } else if (hand.equals("pa")) {
-        janken = play("パー");
+      if (hand.equals("Gu")) {
+        janken = play("Gu");
+      } else if (hand.equals("Choki")) {
+        janken = play("Choki");
+      } else if (hand.equals("Pa")) {
+        janken = play("Pa");
       }
-      if (janken.getComHand().equals("グー")) {
-        match.setUser2Hand("gu");
-      } else if (janken.getComHand().equals("チョキ")) {
-        match.setUser2Hand("choki");
-      } else if (janken.getComHand().equals("パー")) {
-        match.setUser2Hand("pa");
+      if (janken.getComHand().equals("Gu")) {
+        match.setUser2Hand("Gu");
+      } else if (janken.getComHand().equals("Choki")) {
+        match.setUser2Hand("Choki");
+      } else if (janken.getComHand().equals("Pa")) {
+        match.setUser2Hand("Pa");
       }
       matchMapper.insert(match);
 
@@ -130,6 +134,7 @@ public class JankenController {
         match2.setUser2Hand(hand);
         match2.setisActive(true);
         matchMapper.insertPlayerMatch(match2);
+        janken = playerPlay(hand, activeMatchInfo.getUser1Hand(), model);
 
       } else {/* 対戦相手が指定されているアクティブな試合がない場合は待機画面に遷移 */
         MatchInfo matchInfo = new MatchInfo(userinfo1.getId(), userinfo2.getId(), hand);
@@ -148,19 +153,27 @@ public class JankenController {
     return "match.html";
   }
 
+  @GetMapping("/fight/sse")
+  public SseEmitter fightSse(Principal prin) {
+    User user = userMapper.selectByName(prin.getName());
+    SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+    asyncKekka.asyncKekka(emitter, user.getId());
+    return emitter;
+  }
+
   @GetMapping("/fight/gu")
   public String gu(@RequestParam String name, ModelMap model) {
-    return play("グー", name, model);
+    return play("Gu", name, model);
   }
 
   @GetMapping("/fight/choki")
   public String choki(@RequestParam String name, ModelMap model) {
-    return play("チョキ", name, model);
+    return play("Choki", name, model);
   }
 
   @GetMapping("/fight/pa")
   public String pa(@RequestParam String name, ModelMap model) {
-    return play("パー", name, model);
+    return play("Pa", name, model);
   }
 
   private String play(String myHand, String name, ModelMap model) {
@@ -176,6 +189,12 @@ public class JankenController {
     String comHand = HANDS.get(ThreadLocalRandom.current().nextInt(HANDS.size()));
     // String comHand = HANDS.get(0);
     Janken janken = new Janken(myHand, comHand);
+    return janken;
+  }
+
+  private Janken playerPlay(String myHand, String oppHand, ModelMap model) {
+    Janken janken = new Janken(myHand, oppHand);
+    model.addAttribute("result", janken);
     return janken;
   }
 }

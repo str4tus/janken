@@ -4,6 +4,23 @@
 <head>
   <meta charset="utf-8">
   <title>相手の手の待機中</title>
+  <script>
+    window.onload = function () {
+
+      const sse = new EventSource('/fight/sse');
+      sse.onmessage = function (event) {
+        const result = JSON.parse(event.data);
+        const resultText = "Match: id " + result.id
+          + " user1: " + result.user1
+          + " user2: " + result.user2
+          + " user1Hand:" + result.user1Hand
+          + " user2Hand:" + result.user2Hand;
+        document.getElementById("result").textContent = resultText;
+        document.getElementById("back").hidden = false;
+        sse.close();
+      }
+    }
+  </script>
 </head>
 
 <body>
@@ -14,4 +31,7 @@
     Hi
     <span sec:authentication="name"></span>
   </div>
+  <h2>結果</h2>
+  <p id="result"></p>
+  <a id="back" href="/janken" hidden>戻る</a>
 </body>
