@@ -16,10 +16,21 @@
     <span sec:authentication="name"></span>V.S.[[${username}]]
   </h2>
   <br>
-  <!--二つ以上クエリを置くときは()で囲み、「,」で区切る-->
-  <a th:href="@{/fight(id=${id},hand='gu')}">グー </a>
-  <a th:href="@{/fight(id=${id},hand='choki')}">チョキ </a>
-  <a th:href="@{/fight(id=${id},hand='pa')}">パー </a>
+  <!--相手がCPUの時だけ表示する-->
+  <div th:if="${username == 'CPU'}">
+    <!--二つ以上クエリを置くときは()で囲み、「,」で区切る-->
+    <a th:href="@{/fight(id=${id},hand='gu')}">グー </a>
+    <a th:href="@{/fight(id=${id},hand='choki')}">チョキ </a>
+    <a th:href="@{/fight(id=${id},hand='pa')}">パー </a>
+  </div>
+
+  <!--相手がCPU以外の時は、相手の手を待つ画面に遷移する-->
+  <div th:unless="${username == 'CPU'}">
+    <!--二つ以上クエリを置くときは()で囲み、「,」で区切る-->
+    <a th:href="@{/fight(id=${id},hand='gu')}">グー </a>
+    <a th:href="@{/fight(id=${id},hand='choki')}">チョキ </a>
+    <a th:href="@{/fight(id=${id},hand='pa')}">パー </a>
+  </div>
 
   <div th:if="${result}">
     <p>あなたの手は [[${result.myHand}]]</p>

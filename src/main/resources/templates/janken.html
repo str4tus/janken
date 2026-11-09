@@ -21,6 +21,16 @@
     <h2>エントリー</h2>
     <!--thymeleafの記法はコメントアウトしても有効になるので注意-->
     <li th:each="user : ${users}"><a th:href="@{/match(id=${user.id})}"> [[${user.name}]]</a></li>
+
+    <h2>アクティブな試合</h2>
+    <div th:each="MatchInfo,stat:${MatchInfos}">
+      <tr>
+        <td>id:[[${MatchInfo.id}]] </td>
+        <td>user1:[[${MatchInfo.user1}]]</td>
+        <td>user2:[[${MatchInfo.user2}]]</td>
+        <td>isActive:[[${MatchInfo.isActive}]]</td>
+      </tr>
+    </div>
     <h2>試合結果</h2>
     <div th:each="Match,stat:${Matches}">
       <tr>

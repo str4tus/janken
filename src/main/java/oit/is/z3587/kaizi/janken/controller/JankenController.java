@@ -25,6 +25,8 @@ import oit.is.z3587.kaizi.janken.model.UserMapper;
 
 import oit.is.z3587.kaizi.janken.model.Match;
 import oit.is.z3587.kaizi.janken.model.MatchMapper;
+import oit.is.z3587.kaizi.janken.model.MatchInfo;
+import oit.is.z3587.kaizi.janken.model.MatchInfoMapper;
 
 @Controller
 /* 全てのメソッドは/jankenで呼び出される */
@@ -35,6 +37,8 @@ public class JankenController {
   MatchMapper matchMapper;
   @Autowired
   UserMapper userMapper;
+  @Autowired
+  MatchInfoMapper matchInfoMapper;
   // private Entry entry;
 
   private static final List<String> HANDS = List.of("グー", "チョキ", "パー");
@@ -56,6 +60,10 @@ public class JankenController {
     /* lec04-task4で追加 */
     ArrayList<Match> Matches = matchMapper.selectAllMatches();
     model.addAttribute("Matches", Matches);
+    /* ここまで */
+    /* lec05-task2で追加 */
+    ArrayList<MatchInfo> MatchInfos = matchInfoMapper.selectActiveMatchInfo();
+    model.addAttribute("MatchInfos", MatchInfos);
     /* ここまで */
 
     return "janken.html";
@@ -91,19 +99,26 @@ public class JankenController {
     match.setUser2(userinfo2.getId());
     match.setUser1Hand(hand);
     Janken janken = null;
-    if (hand.equals("gu")) {
-      janken = play("グー");
-    } else if (hand.equals("choki")) {
-      janken = play("チョキ");
-    } else if (hand.equals("pa")) {
-      janken = play("パー");
-    }
-    if (janken.getComHand().equals("グー")) {
-      match.setUser2Hand("gu");
-    } else if (janken.getComHand().equals("チョキ")) {
-      match.setUser2Hand("choki");
-    } else if (janken.getComHand().equals("パー")) {
-      match.setUser2Hand("pa");
+    if (userinfo2.getName().equals("CPU")) {
+      if (hand.equals("gu")) {
+        janken = play("グー");
+      } else if (hand.equals("choki")) {
+        janken = play("チョキ");
+      } else if (hand.equals("pa")) {
+        janken = play("パー");
+      }
+      if (janken.getComHand().equals("グー")) {
+        match.setUser2Hand("gu");
+      } else if (janken.getComHand().equals("チョキ")) {
+        match.setUser2Hand("choki");
+      } else if (janken.getComHand().equals("パー")) {
+        match.setUser2Hand("pa");
+      }
+    } else { /* 対戦相手がCPUでないとき */
+      MatchInfo matchInfo = new MatchInfo(userinfo1.getId(), userinfo2.getId(), hand);
+      matchInfoMapper.insert(matchInfo);
+      // 後でifで条件分岐追加
+      return "wait.html";
     }
 
     matchMapper.insert(match);
