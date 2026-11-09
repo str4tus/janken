@@ -13,7 +13,7 @@ public class Janken {
   }
 
   private String judge(String myHand, String comHand) {
-    String[] hands = { "グー", "チョキ", "パー" };
+    String[] hands = { "Gu", "Choki", "Pa" };
     int myIndex = indexOf(hands, myHand);
     int comIndex = indexOf(hands, comHand);
     int outcome = (comIndex - myIndex + hands.length) % hands.length;
